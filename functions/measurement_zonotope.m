@@ -16,7 +16,7 @@ function Z_x_y_i = measurement_zonotope(y,C,Z_v)
     c_x             = V1*Sigma_sq_inv*U1'*(y-c_v);
     G_x_range       = V1*Sigma_sq_inv*U1'*G_v;
 
-    M               = 100;
+    M               = 10;
     G_x_null        = V2*M;
     
     G_x             = [G_x_range, G_x_null];

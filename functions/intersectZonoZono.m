@@ -1,4 +1,4 @@
-function Zres = intersectZonoZono(z1,Cl,Z_v,yl,varargin)
+function [Zres,lambda] = intersectZonoZono(z1,Cl,Z_v,yl,varargin)
 % intersectZonoStrip - computes the intersection between one zonotope and
 %    list of strips according to [1]
 %    the strip is defined as | hx-y | <= d
@@ -114,18 +114,22 @@ end
 
 %prepare center
 c_new=z1.center;
+index=1;
 for i=1:length(Cl)
     p = C_sizes{i};
-    c_new = c_new + lambda(:,i:(i+p-1))*( yl{i} - Cl{i}*z1.center - Z_v{i}.center);
+    c_new = c_new + lambda(:,index:(index+p-1))*( yl{i} - Cl{i}*z1.center - Z_v{i}.center);
+    index=index+p;
 end
 
 %prepare generators
 part1 = eye(length(z1.center));
+index=1;
 for ii=1:length(Z_v)
     p = C_sizes{ii};
-    part1 = part1 - lambda(:,ii:(ii+p-1))*Cl{ii};
+    part1 = part1 - lambda(:,index:(index+p-1))*Cl{ii};
     G_v_i = Z_v{ii}.generators;
-    part2(:,ii:(ii+p-1)) = - G_v_i*lambda(:,ii:(ii+p-1));
+    part2(:,index:(index+p-1)) = - G_v_i*lambda(:,index:(index+p-1));
+    index=index+p;
 end
 
 part1 = part1 * H;
@@ -136,11 +140,13 @@ Zres = zonotope([c_new H_new]);
 
     function nfro = fun(lambda)
         part1 = eye(length(z1.center));
+        index=1;
         for ii=1:length(Z_v)
             p = C_sizes{ii};
-            part1 = part1 - lambda(:,ii:(ii+p-1))*Cl{ii};
+            part1 = part1 - lambda(:,index:(index+p-1))*Cl{ii};
             G_v_i = Z_v{ii}.generators;
-            part2(:,ii:(ii+p-1)) = - G_v_i*lambda(:,ii:(ii+p-1));
+            part2(:,index:(index+p-1)) = - G_v_i*lambda(:,index:(index+p-1));
+            index=index+p;
         end
         part1 = part1 * H;
         H_new = [part1 part2];
