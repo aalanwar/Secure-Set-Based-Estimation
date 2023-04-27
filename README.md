@@ -7,7 +7,7 @@ This repo cotains the code for our two papers:
 European Journal of Control ( [link](https://arxiv.org/abs/2011.08472) )
 
 <br/><br/>
-2- Muhammad Umar B. Niazi, Michelle S. Chong, Amr Alanwar, Karl H. Johansson "Secure Set-Based State Estimation for Multi-Sensor Linear Systems under Adversarial Attacks" Submitted to IEEE Transactions on Automatic Control ( [link]() ) 
+2- Muhammad Umar B. Niazi, Michelle S. Chong, Amr Alanwar, Karl H. Johansson "Secure Set-Based State Estimation for Multi-Sensor Linear Systems under Adversarial Attacks" Submitted to Automatica  ( [link]() ) 
  
 ## Problem Statement
 We consider the problem of set-based state estimation for linear time-invariant (LTI) systems under time-varying sensor attacks. <br/>
