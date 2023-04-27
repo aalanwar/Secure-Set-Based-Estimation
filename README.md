@@ -4,16 +4,16 @@ This repo cotains the code for our two papers:
 
 <br/><br/>
 1- Muhammad Umar B. Niazi, Amr Alanwar, Michelle S. Chong, Karl H. Johansson "Resilient Set-based State Estimation for Linear Time-Invariant Systems Using Zonotopes"
-European Journal of Control ( [link](https://arxiv.org/abs/2011.08472) )
+European Journal of Control ( [link](https://arxiv.org/abs/2211.08474) )
 
 <br/><br/>
 2- Muhammad Umar B. Niazi, Michelle S. Chong, Amr Alanwar, Karl H. Johansson "Secure Set-Based State Estimation for Multi-Sensor Linear Systems under Adversarial Attacks" Submitted to Automatica  ( [link]() ) 
  
 ## Problem Statement
 We consider the problem of set-based state estimation for linear time-invariant (LTI) systems under time-varying sensor attacks. <br/>
-Provided that the LTI system is stable and observable via every single sensor and that at least one sensor is uncompromised, <br/>
-we guarantee that the true state is always contained in the estimated set. We use zonotopes to represent these sets for computational efficiency. <br/>
-However, we show that intelligently designed stealthy attacks may cause exponential growth in the algorithm's worst-case complexity.<br/>
+Provided that the LTI system is stable and observable via every single sensor and that at least one sensor is uncompromised, 
+we guarantee that the true state is always contained in the estimated set. We use zonotopes to represent these sets for computational efficiency. 
+However, we show that intelligently designed stealthy attacks may cause exponential growth in the algorithm's worst-case complexity.
 We present several strategies to handle this complexity issue and illustrate our resilient zonotope-based state estimation algorithm on a rotating target system.
 <br /> <br />
 <p align="center">
