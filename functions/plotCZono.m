@@ -51,7 +51,7 @@ end
 
 %h = plot(CZ,[1 2],'r','Template',256);
 %plot(CZ,[1,2],'b','Filled',false,'Splits',4);
-h=plot(CZ,[1 2],'r','Template',256);
+h=plot(CZ,dims,'Color', varargin{3},'LineWidth',varargin{6},'Template',512);
 % % project zonotope
 % Z = project(Z,dims);
 % 

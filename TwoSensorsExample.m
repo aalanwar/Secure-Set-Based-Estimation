@@ -1,16 +1,31 @@
+% illustrative example - Computes Secure set-based estimation 
+% for the illustrative example in the following paper
+% Muhammad Umar B. Niazi, Michelle S. Chong, Amr Alanwar, Karl Johansson "Secure Set-Based State Estimation for Multi-Sensor Linear Systems under Adversarial Attacks"
+%
+%
+%
+% Author:       Amr Alanwar
+% Written:      27-ِApril-2023
+% Last update:  
+% Last revision:---
+
+%------------- BEGIN CODE --------------
+
+
+
 clear all
 close all
 
 N=10;
-rng(5)
-%% 55 fail
+rng(9)
+%% 5 conference
 
 
 Ts =1;
 A_true  = [0.9455   -0.2426;
     0.2486    0.9455];
 B_true  = [0.1; 0];
-Z_u         = zonotope( 0, 10);
+Z_u         = zonotope( 0,3);
 q=3;
 % define observability matrices
 % C       = cell(1,q);
@@ -61,7 +76,7 @@ for idx = 1:length(C)
     [p_idx,~] = size(C_z_v);
     C_sizes{idx} = p_idx;
 end
-SAVEMOVIE = true;
+SAVEMOVIE = false;
 if SAVEMOVIE
     vidObj = VideoWriter('video/SSBE.avi');
     vidObj.FrameRate=1;
@@ -69,7 +84,7 @@ if SAVEMOVIE
 end
 
 
-fig = figure('Renderer', 'painters', 'Position', [10 10 700 700]);
+fig = figure('Renderer', 'painters', 'Position', [10 10 900 900]);
 clf;
 bd = 25;
 % xlim([-bd bd]);
@@ -77,7 +92,7 @@ bd = 25;
 grid on
 hold on
 
-Z = zonotope([1 2 2 2 6 2 8;1 2 2 0 5 0 6 ]);
+Z = conZonotope([[0;0] diag([10,10])  ],[],[]);
 % h_measSet{1} = plotZono(Z,[1,2],'black');
 %
 % h_measSet{3} = plotZono(Z,[1,2],'black','*');
@@ -88,8 +103,12 @@ Z = zonotope([1 2 2 2 6 2 8;1 2 2 0 5 0 6 ]);
 % measSet{2} =Z;
 % measSet{3} =Z;
 measUpdateGrp{1}=Z;
-h_measSet{2} = plotZono(measUpdateGrp{1},[1,2],'black','+');
+Linwid = 2;
+Blacklinwid = 3;
+h_measSet{2} = plotCZono(measUpdateGrp{1},[1,2],'black','+','LineWidth',Linwid);
 legend('measSet1');
+
+indexAtt = 1;
 for k = 1:N
 
     %% Simulate true system
@@ -98,24 +117,27 @@ for k = 1:N
 
 
 
-    u(k)        = randPoint(Z_u);
-    u_zon       = zonotope(u(k),0);
-
+    timeUpdateGrp={};
     for j=1:length(measUpdateGrp)
         %time update each set separately
-        timeUpdateGrp{j}   = [A_true , B_true]*zonotope(cartProd(measUpdateGrp{j},u_zon)) + Z_w;
+        timeUpdateGrp{j}   = [A_true , B_true]*conZonotope(cartProd(measUpdateGrp{j},Z_u)) + Z_w;
     end
 
 
+    indexAtt = mod(indexAtt,3)+1;
+    u(k)        = randPoint(Z_u);
+    u_zon       = zonotope(u(k),0);
     w(:,k)      = randPoint(Z_w);
     x(:,k+1)    = A_true*x(:,k) + B_true*u(k) + w(:,k);
     for i = 1:q
         % v{i}(k) = randPoint(Z_v_meas{i});
         y{i}(:,k) = C{i}*x(:,k) + randPoint(Z_v_meas{i});
-
-
+        if i == indexAtt
+            y{i}(:,k)= y{i}(:,k)+2+rand;
+        end
     end
-    y{3}(:,k)= y{3}(:,k)+1;
+
+    
 
 
     %     [Fresult,Flambda] = intersectZonoZono(Fresult,C,Z_v_meas,y,'frobenius');
@@ -135,21 +157,13 @@ for k = 1:N
     %         [measSet{3},lambda{3}] = intersectZonoZono(measSet{3},C3,Z_v3,y3,'frobenius');
     %     end
 
-    pause(1);
-    clf;
-    bd = 25;
-    % xlim([-bd bd]);
-    % ylim([-bd bd]);
-    grid on
-    hold on
+    pause(0.01);
 
-    for j=1:2
-        hMeasSet=  plotZono(measSet{j},[1,2],'blue','+');
-    end
-    hMeasSetAttacked=  plotZono(measSet{3},[1,2],'red','*');
-    for j=1:length(timeUpdateGrp)
-        hTimeUpdate=  plotZono(timeUpdateGrp{j},[1,2],'green','+');
-    end
+    %axis(axx{plotRun});
+    % skip warning for extra legend entries
+
+
+
 
     index=1;
     measUpdateGrp={};
@@ -170,7 +184,7 @@ for k = 1:N
         pairs = {[1 2],[1 3],[2 3]};
         for ii=1:length(pairs)
             if(isIntersecting(measSet{pairs{ii}(1)},measSet{pairs{ii}(2)}))
-                measSetpair=measSet{pairs{ii}(1)}&measSet{pairs{ii}(2)};
+                measSetpair=conZonotope(measSet{pairs{ii}(1)})&conZonotope(measSet{pairs{ii}(2)});
                 for j=1:length(timeUpdateGrp)
                     if (isIntersecting(measSetpair,timeUpdateGrp{j}))
                         measUpdateGrp{index}=measSetpair & timeUpdateGrp{j};
@@ -183,6 +197,9 @@ for k = 1:N
 
 
 
+    %     for ii =1:length(measUpdateGrp)
+    %         measUpdateGrp{ii} = reduce(measUpdateGrp{ii},'girard',2);
+    %     end
 
 
 
@@ -198,12 +215,69 @@ for k = 1:N
     %         end
     %     end
     %     measUpdateGrp=measUpdateGrpNew;
-    for j=1:length(measUpdateGrp)
-        hMeasUpdate=plotZono(measUpdateGrp{j},[1,2],'black','+');
-    end
-    legend([hMeasSet,hMeasSetAttacked,hTimeUpdate,hMeasUpdate],...
-        'Meas Safe','Meas Attacked','Time Update','Meas Update','Location','northwest');
+    clf;
 
+
+    bd = 25;
+    % xlim([-bd bd]);
+    % ylim([-bd bd]);
+    grid on
+    hold on
+    box on
+
+    hpoint = plot(x(1,k),x(2,k),'x','LineWidth',Blacklinwid+1);
+    for j=1:3
+        if j == indexAtt
+            hMeasSetAttacked=  plotZono(measSet{j},[1,2],'red','*','LineWidth',Linwid);
+        else
+            hMeasSet=  plotZono(measSet{j},[1,2],'blue','+','LineWidth',Linwid);
+        end
+    end
+    
+    for j=1:length(timeUpdateGrp)
+        hTimeUpdate=  plotCZono(timeUpdateGrp{j},[1,2],'green','+','LineWidth',Linwid);
+    end
+    for j=1:length(measUpdateGrp)
+        hMeasUpdate=plotCZono(measUpdateGrp{j},[1,2],'black','+','LineWidth',Blacklinwid);
+    end
+
+
+
+    if indexAtt==3
+        safeIndexStrA = '1$, ';
+        safeIndexStrB = '2$'; 
+    elseif indexAtt==2
+        safeIndexStrA = '1$, ';
+        safeIndexStrB = '3$';
+    elseif indexAtt==1
+        safeIndexStrA = '2$, ';
+        safeIndexStrB = '3$';        
+    end
+
+
+    Yattstr =strcat(' $\mathcal{Y}^', num2str(indexAtt) ,'_k$');
+    legend([hpoint,hMeasSet,hMeasSetAttacked,hTimeUpdate,hMeasUpdate],...
+        'True state $x(k)$',strcat('Safe $\mathcal{Y}_k^',safeIndexStrA,' $\mathcal{Y}_k^',safeIndexStrB),strcat('Attacked',Yattstr),'Time update $\hat{\mathcal{X}}_{k|k-1}$','Meas. update $\hat{\mathcal{X}}_{k}$','Location','northwest','Interpreter','latex');
+
+    xlabel('$x_1(k)$','Interpreter','latex');
+    ylabel('$x_2(k)$','Interpreter','latex');
+    warOrig = warning; warning('off','all');
+    warning(warOrig);
+    ax = gca;
+    ax.FontSize = 26;
+    %set(gcf, 'Position',  [50, 50, 800, 400])
+    ax = gca;
+    outerpos = ax.OuterPosition;
+    ti = ax.TightInset;
+    left = outerpos(1) + ti(1);
+    bottom = outerpos(2) + ti(2);
+    ax_width = outerpos(3) - ti(1) - ti(3);
+    ax_height = outerpos(4) - ti(2) - ti(4);
+    ax.Position = [left bottom ax_width ax_height];
+    yticks(-5:2:7);
+    xticks(-5:2:6);
+    ylim([-5 7])
+    xlim([-5.5 5.5])
     if SAVEMOVIE
         for i =1:5
             f = getframe(fig);
