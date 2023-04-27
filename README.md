@@ -18,7 +18,7 @@ We present several strategies to handle this complexity issue and illustrate our
 <br /> <br />
 <p align="center">
 <img
-src="Figures/secure_set_based_estimation.png"
+src="figures/secure_set_based_estimation.png"
 raw=true
 alt="Subject Pronouns"
 width=500
