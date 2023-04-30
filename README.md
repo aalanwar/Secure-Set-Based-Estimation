@@ -10,7 +10,7 @@ European Journal of Control ( [link](https://arxiv.org/abs/2211.08474) )
 2- Muhammad Umar B. Niazi, Michelle S. Chong, Amr Alanwar, Karl H. Johansson "Secure Set-Based State Estimation for Multi-Sensor Linear Systems under Adversarial Attacks" Submitted to Automatica  ( [link]() ) 
  
 ## Problem Statement
-We consider the problem of set-based state estimation for linear time-invariant (LTI) systems under time-varying sensor attacks. <br/>
+We consider the problem of set-based state estimation for linear time-invariant (LTI) systems under time-varying sensor attacks.
 Provided that the LTI system is stable and observable via every single sensor and that at least one sensor is uncompromised, 
 we guarantee that the true state is always contained in the estimated set. We use zonotopes to represent these sets for computational efficiency. 
 However, we show that intelligently designed stealthy attacks may cause exponential growth in the algorithm's worst-case complexity.
