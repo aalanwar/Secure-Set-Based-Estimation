@@ -27,13 +27,6 @@ width=500
 <br />
 <br />
 
-## Files Description 
-There are two levels of complexity for the proposed data driven reachability analysis<br />
-A- Basic reachability analysis under the folder examples-basic<br /><br />
-B- Advanced reachability analysis using constrained matrix zonotope under the folder examples-cmz.
-These files compare three methods for reachability analysis namely, matrix zonotope, constrained matrix
-zonotop using exact noise description and constrained matrix zonotope given side information.<br />
-<br />
 
 ## Running 
 1- Download [CORA 2020](https://tumcps.github.io/CORA/data/CORA_2020.zip) and [MPT](https://www.mpt3.org) toolboxs.<br />
